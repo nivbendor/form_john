@@ -1,6 +1,24 @@
 import React, { useState } from 'react';
 import { DatePicker } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
+import TextInput from './TextInput';
+
+// Custom wrapper for DatePicker
+const CustomDatePicker = React.forwardRef((props, ref) => {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-700">
+        Pick a date
+      </label>
+      <DatePicker 
+        {...props}
+        ref={ref}
+        style={{ width: '100%' }}
+        className="mt-1"
+      />
+    </div>
+  );
+});
 
 const EmployeeStep = ({ formData, setFormData, onPrev, onSubmit }) => {
   const [errors, setErrors] = useState({});
@@ -9,10 +27,8 @@ const EmployeeStep = ({ formData, setFormData, onPrev, onSubmit }) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
     setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
@@ -43,61 +59,34 @@ const EmployeeStep = ({ formData, setFormData, onPrev, onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="employeeFirstName" className="block text-sm font-medium text-gray-700">
-          First Name
-        </label>
-        <input
-          type="text"
-          id="employeeFirstName"
-          name="employeeFirstName"
-          value={formData.employeeFirstName}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        />
-        {errors.employeeFirstName && <p className="mt-1 text-sm text-red-600">{errors.employeeFirstName}</p>}
-      </div>
-      <div>
-        <label htmlFor="employeeLastName" className="block text-sm font-medium text-gray-700">
-          Last Name
-        </label>
-        <input
-          type="text"
-          id="employeeLastName"
-          name="employeeLastName"
-          value={formData.employeeLastName}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        />
-        {errors.employeeLastName && <p className="mt-1 text-sm text-red-600">{errors.employeeLastName}</p>}
-      </div>
-      <div>
-        <label htmlFor="employeeEmail" className="block text-sm font-medium text-gray-700">
-          Email
-        </label>
-        <input
-          type="email"
-          id="employeeEmail"
-          name="employeeEmail"
-          value={formData.employeeEmail}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        />
-        {errors.employeeEmail && <p className="mt-1 text-sm text-red-600">{errors.employeeEmail}</p>}
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Pick a date
-        </label>
-        <DatePicker 
-          value={formData.selectedDate}
-          onChange={handleDateChange}
-          disabled={formData.notSure}
-          style={{ width: '100%' }}
-          className="mt-1"
-        />
-        {errors.date && <p className="mt-1 text-sm text-red-600">{errors.date}</p>}
-      </div>
+      <TextInput
+        label="First Name"
+        value={formData.employeeFirstName}
+        onChange={(e) => handleChange('employeeFirstName', e.target.value)}
+        errorText={errors.employeeFirstName}
+        state={errors.employeeFirstName ? 'error' : 'default'}
+      />
+      <TextInput
+        label="Last Name"
+        value={formData.employeeLastName}
+        onChange={(e) => handleChange('employeeLastName', e.target.value)}
+        errorText={errors.employeeLastName}
+        state={errors.employeeLastName ? 'error' : 'default'}
+      />
+      <TextInput
+        label="Email"
+        type="email"
+        value={formData.employeeEmail}
+        onChange={(e) => handleChange('employeeEmail', e.target.value)}
+        errorText={errors.employeeEmail}
+        state={errors.employeeEmail ? 'error' : 'default'}
+      />
+      <CustomDatePicker
+        value={formData.selectedDate}
+        onChange={handleDateChange}
+        disabled={formData.notSure}
+      />
+      {errors.date && <p className="mt-1 text-sm text-red-600">{errors.date}</p>}
       <div className="flex items-center">
         <input
           type="checkbox"

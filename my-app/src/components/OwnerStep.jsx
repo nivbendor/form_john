@@ -1,23 +1,57 @@
 import React, { useState } from 'react';
+import TextInput from './TextInput';
 
+/**
+ * @typedef {Object} FormData
+ * @property {string} ownerFirstName
+ * @property {string} ownerLastName
+ * @property {string} ownerPhone
+ * @property {string} ownerEmail
+ * @property {string} ownerAddress
+ */
+
+/**
+ * @typedef {Object} OwnerStepProps
+ * @property {FormData} formData
+ * @property {function} setFormData
+ * @property {function} onNext
+ * @property {function} onPrev
+ */
+
+/**
+ * @param {OwnerStepProps} props
+ */
 const OwnerStep = ({ formData, setFormData, onNext, onPrev }) => {
   const [errors, setErrors] = useState({});
 
+  /**
+   * @param {string} phone
+   * @returns {boolean}
+   */
   const validatePhone = (phone) => {
     return /^\d{10}$/.test(phone);
   };
 
+  /**
+   * @param {string} email
+   * @returns {boolean}
+   */
   const validateEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  /**
+   * @param {string} name
+   * @param {string} value
+   */
+  const handleChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
     setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
+  /**
+   * @param {React.FormEvent} e
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = {};
@@ -37,76 +71,43 @@ const OwnerStep = ({ formData, setFormData, onNext, onPrev }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="ownerFirstName" className="block text-sm font-medium text-gray-700">
-          First Name
-        </label>
-        <input
-          type="text"
-          id="ownerFirstName"
-          name="ownerFirstName"
-          value={formData.ownerFirstName}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        />
-        {errors.ownerFirstName && <p className="mt-1 text-sm text-red-600">{errors.ownerFirstName}</p>}
-      </div>
-      <div>
-        <label htmlFor="ownerLastName" className="block text-sm font-medium text-gray-700">
-          Last Name
-        </label>
-        <input
-          type="text"
-          id="ownerLastName"
-          name="ownerLastName"
-          value={formData.ownerLastName}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        />
-        {errors.ownerLastName && <p className="mt-1 text-sm text-red-600">{errors.ownerLastName}</p>}
-      </div>
-      <div>
-        <label htmlFor="ownerPhone" className="block text-sm font-medium text-gray-700">
-          Phone Number (10 digits)
-        </label>
-        <input
-          type="tel"
-          id="ownerPhone"
-          name="ownerPhone"
-          value={formData.ownerPhone}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        />
-        {errors.ownerPhone && <p className="mt-1 text-sm text-red-600">{errors.ownerPhone}</p>}
-      </div>
-      <div>
-        <label htmlFor="ownerEmail" className="block text-sm font-medium text-gray-700">
-          Email
-        </label>
-        <input
-          type="email"
-          id="ownerEmail"
-          name="ownerEmail"
-          value={formData.ownerEmail}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        />
-        {errors.ownerEmail && <p className="mt-1 text-sm text-red-600">{errors.ownerEmail}</p>}
-      </div>
-      <div>
-        <label htmlFor="ownerAddress" className="block text-sm font-medium text-gray-700">
-          Address
-        </label>
-        <input
-          type="text"
-          id="ownerAddress"
-          name="ownerAddress"
-          value={formData.ownerAddress}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        />
-        {errors.ownerAddress && <p className="mt-1 text-sm text-red-600">{errors.ownerAddress}</p>}
-      </div>
+      <TextInput
+        label="First Name"
+        value={formData.ownerFirstName}
+        onChange={(e) => handleChange('ownerFirstName', e.target.value)}
+        errorText={errors.ownerFirstName}
+        state={errors.ownerFirstName ? 'error' : 'default'}
+      />
+      <TextInput
+        label="Last Name"
+        value={formData.ownerLastName}
+        onChange={(e) => handleChange('ownerLastName', e.target.value)}
+        errorText={errors.ownerLastName}
+        state={errors.ownerLastName ? 'error' : 'default'}
+      />
+      <TextInput
+        label="Phone Number (10 digits)"
+        value={formData.ownerPhone}
+        onChange={(e) => handleChange('ownerPhone', e.target.value)}
+        errorText={errors.ownerPhone}
+        state={errors.ownerPhone ? 'error' : 'default'}
+        type="tel"
+      />
+      <TextInput
+        label="Email"
+        value={formData.ownerEmail}
+        onChange={(e) => handleChange('ownerEmail', e.target.value)}
+        errorText={errors.ownerEmail}
+        state={errors.ownerEmail ? 'error' : 'default'}
+        type="email"
+      />
+      <TextInput
+        label="Address"
+        value={formData.ownerAddress}
+        onChange={(e) => handleChange('ownerAddress', e.target.value)}
+        errorText={errors.ownerAddress}
+        state={errors.ownerAddress ? 'error' : 'default'}
+      />
       <div className="flex justify-between">
         <button
           type="button"
