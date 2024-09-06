@@ -1,105 +1,51 @@
 import React, { useState } from 'react';
-import { DatePicker } from 'rsuite';
-import 'rsuite/dist/rsuite.min.css';
-import TextInput from './TextInput';
+import EmployeeProfile from './EmployeeProfile';
 
-// Custom wrapper for DatePicker
-const CustomDatePicker = React.forwardRef((props, ref) => {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700">
-        Pick a date
-      </label>
-      <DatePicker 
-        {...props}
-        ref={ref}
-        style={{ width: '100%' }}
-        className="mt-1"
-      />
-    </div>
-  );
-});
-
-const EmployeeStep = ({ formData, setFormData, onPrev, onSubmit }) => {
+const EmployeeStep = ({ formData, setFormData, onPrev, onNext }) => {
   const [errors, setErrors] = useState({});
 
   const validateEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const handleChange = (name, value) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: '' }));
+  const handleProfileSave = (updatedData) => {
+    setFormData((prev) => ({
+      ...prev,
+      employeeFirstName: updatedData.name.split(' ')[0] || '',
+      employeeLastName: updatedData.name.split(' ').slice(1).join(' ') || '',
+      employeeEmail: updatedData.email,
+      employeeDateOfBirth: updatedData.dateOfBirth,
+      employeePhone: updatedData.phone,
+      employeeGender: updatedData.gender,
+    }));
   };
 
-  const handleDateChange = (date) => {
-    setFormData((prev) => ({ ...prev, selectedDate: date }));
-  };
-
-  const handleNotSureChange = (e) => {
-    const { checked } = e.target;
-    setFormData((prev) => ({ ...prev, notSure: checked, selectedDate: null }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleNext = () => {
     const newErrors = {};
 
     if (!formData.employeeFirstName.trim()) newErrors.employeeFirstName = 'First name is required';
     if (!formData.employeeLastName.trim()) newErrors.employeeLastName = 'Last name is required';
     if (!validateEmail(formData.employeeEmail)) newErrors.employeeEmail = 'Invalid email format';
-    if (!formData.selectedDate && !formData.notSure) newErrors.date = 'Please select a date or choose "Not sure"';
 
     if (Object.keys(newErrors).length === 0) {
-      onSubmit();
+      onNext();
     } else {
       setErrors(newErrors);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <TextInput
-        label="First Name"
-        value={formData.employeeFirstName}
-        onChange={(e) => handleChange('employeeFirstName', e.target.value)}
-        errorText={errors.employeeFirstName}
-        state={errors.employeeFirstName ? 'error' : 'default'}
+    <div className="space-y-6">
+      <EmployeeProfile
+        initialData={{
+          name: `${formData.employeeFirstName} ${formData.employeeLastName}`.trim(),
+          email: formData.employeeEmail,
+          dateOfBirth: formData.employeeDateOfBirth || '',
+          phone: formData.employeePhone || '',
+          gender: formData.employeeGender || '',
+        }}
+        onSave={handleProfileSave}
       />
-      <TextInput
-        label="Last Name"
-        value={formData.employeeLastName}
-        onChange={(e) => handleChange('employeeLastName', e.target.value)}
-        errorText={errors.employeeLastName}
-        state={errors.employeeLastName ? 'error' : 'default'}
-      />
-      <TextInput
-        label="Email"
-        type="email"
-        value={formData.employeeEmail}
-        onChange={(e) => handleChange('employeeEmail', e.target.value)}
-        errorText={errors.employeeEmail}
-        state={errors.employeeEmail ? 'error' : 'default'}
-      />
-      <CustomDatePicker
-        value={formData.selectedDate}
-        onChange={handleDateChange}
-        disabled={formData.notSure}
-      />
-      {errors.date && <p className="mt-1 text-sm text-red-600">{errors.date}</p>}
-      <div className="flex items-center">
-        <input
-          type="checkbox"
-          id="notSure"
-          name="notSure"
-          checked={formData.notSure}
-          onChange={handleNotSureChange}
-          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-        />
-        <label htmlFor="notSure" className="ml-2 block text-sm text-gray-900">
-          Not sure
-        </label>
-      </div>
       <div className="flex justify-between">
         <button
           type="button"
@@ -109,13 +55,14 @@ const EmployeeStep = ({ formData, setFormData, onPrev, onSubmit }) => {
           Previous
         </button>
         <button
-          type="submit"
+          type="button"
+          onClick={handleNext}
           className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
-          Submit
+          Next
         </button>
       </div>
-    </form>
+    </div>
   );
 };
 

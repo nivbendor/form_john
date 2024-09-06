@@ -47,7 +47,7 @@ const TextInput: React.FC<TextInputProps> = ({
   };
 
   const getLabelClassName = (): string => {
-    let baseClass = "text-left text-xs font-normal font-['Inter'] mb-1";
+    let baseClass = "text-left text-base font-semibold font-['Inter'] mb-1";
     
     if (state === 'focused' || isFocused) return `${baseClass} text-[#5570f1]`;
     if (state === 'error') return `${baseClass} text-[#f57e76]`;
@@ -63,7 +63,7 @@ const TextInput: React.FC<TextInputProps> = ({
   };
 
   return (
-    <div className="w-full flex-col justify-start items-start gap-1 inline-flex">
+    <div className="w-full flex-col justify-start items-start px-2 inline-flex">
       <label className={getLabelClassName()}>{label}</label>
       <div className={getInputClassName()}>
         <div className="self-stretch grow shrink basis-0 justify-start items-center gap-4 inline-flex">

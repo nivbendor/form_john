@@ -4,6 +4,7 @@ import ProgressBar from './ui/ProgressBar';
 import BusinessStep from './BusinessStep';
 import OwnerStep from './OwnerStep';
 import EmployeeStep from './EmployeeStep';
+import EnrollmentDateStep from './EnrollmentDateStep';
 
 const Multistep = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -14,10 +15,11 @@ const Multistep = () => {
     ownerFirstName: '', ownerLastName: '', ownerPhone: '', ownerEmail: '', ownerAddress: '',
     // Employee Step
     employeeFirstName: '', employeeLastName: '', employeeEmail: '',
+    // Enrollment Date Step
     selectedDate: null, notSure: false
   });
 
-  const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 3));
+  const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 4));
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
 
   const handleSubmit = () => {
@@ -28,10 +30,10 @@ const Multistep = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+    <div className="min-h-screen bg-gray-100 lg:flex xl:flex 2xl:flex flex-col items-center justify-center lg:p-4 xl:p-4 2xl:p-4">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
         <Logo />
-        <ProgressBar currentStep={currentStep} totalSteps={3} />
+        <ProgressBar currentStep={currentStep} totalSteps={4} />
         {currentStep === 1 && (
           <BusinessStep
             formData={formData}
@@ -49,6 +51,14 @@ const Multistep = () => {
         )}
         {currentStep === 3 && (
           <EmployeeStep
+            formData={formData}
+            setFormData={setFormData}
+            onNext={nextStep}
+            onPrev={prevStep}
+          />
+        )}
+        {currentStep === 4 && (
+          <EnrollmentDateStep
             formData={formData}
             setFormData={setFormData}
             onPrev={prevStep}
