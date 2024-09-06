@@ -33,7 +33,7 @@ const Multistep = () => {
     <div className="min-h-screen bg-gray-100 lg:flex xl:flex 2xl:flex flex-col items-center justify-center lg:p-4 xl:p-4 2xl:p-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
         <Logo />
-        <ProgressBar currentStep={currentStep} totalSteps={4} />
+        <ProgressBar currentStep={2} steps={['Business', 'Owner', 'Employee', 'Start Date']} />
         {currentStep === 1 && (
           <BusinessStep
             formData={formData}

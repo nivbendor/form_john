@@ -39,7 +39,7 @@ const BusinessStep = ({ formData, setFormData, onNext }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-md mx-auto px-4 sm:px-6 lg:px-8">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-2">
       <TextInput
         label="Legal Name"
         value={formData.legalName}
